@@ -1,6 +1,3 @@
-const { prompt } = require('inquirer');
-const mainMenu = require('./utilities/mainMenu');
+const staffCommander = require('./staff-commander');
 
-
-
-mainMenu();
+staffCommander();
