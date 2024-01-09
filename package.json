@@ -2,13 +2,14 @@
   "name": "staff-commander",
   "version": "1.0.0",
   "description": "Employee Tracker using NODE, mySQL, and Inquirer",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv":"16.3.1",
     "inquirer": "^8.2.4",
     "mysql2": "^3.7.0"
   }

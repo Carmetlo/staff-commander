@@ -9,8 +9,8 @@ class Roles {
         this.department_id = department_id;
     }
 
-    viewAll() {
-        const sql = `SELECT
+    viewAllRoles() {
+        const sql = `SELECT 
         r.title,
         r.salary,
         d.dep_name AS Department
@@ -20,14 +20,15 @@ class Roles {
         .promise()
         .query(sql)
         .then(([table])=> {
-            return table;
-        })
+            console.table(table);
+        });
     }
+
     getAll(){
         const sql = `SELECT * FROM roles`
         return db.promise().query(sql).then(([table])=> {
             return table
-        })
+        });
     }
 
     addRole(){
@@ -45,8 +46,9 @@ class Roles {
         .query(sql)
         .then(([role])=>{
             return role;
-        })
+        });
     }
 }
+
 
 module.exports = Roles;

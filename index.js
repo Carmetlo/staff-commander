@@ -1,5 +1,6 @@
 const { prompt } = require('inquirer');
+const mainMenu = require('./utilities/mainMenu');
 
 
 
-select();
+mainMenu();

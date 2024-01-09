@@ -1,8 +1,5 @@
 const inquirer = require('inquirer');
 const db = require('../config/createConnection')
-// const { viewAllEmployees, addEmployee, updateEmployee} = require('./actions/employees');
-// const { viewAllDepartments, addDepartment} = require('./actions/department')
-// const {viewAllRoles, addRole} = require('./actions/roles')
 
 const mainMenu = ()  => {
     inquirer.prompt([
@@ -73,4 +70,17 @@ const viewAllEmployees = () => {
 
     })
 }
+
+const viewAllRoles = () => {
+    db.promise().query('SELECT * FROM roles')
+    .then(([roleTable]) => {
+        console.log(``)
+        console.table(roleTable)
+        console.log('')
+    })
+    .then(() => {
+        mainMenu()
+    })
+}
+
 module.exports = mainMenu;
