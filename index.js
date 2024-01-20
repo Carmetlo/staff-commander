@@ -1,8 +1,13 @@
 const inquirer = require("inquirer");
 const figlet = require("figlet");
 const db = require("./helpers/database.js");
-const { addDepartment } = require("./helpers/menu.js");
-
+// const { addDepartment } = require("./helpers/menu.js");
+function choiceArray(results, name_key, value_key) {
+  return results.map((row) => ({
+    name: row[name_key],
+    value: row[value_key],
+  }));
+}
 function welcome() {
   
     let welcome_message = "Staff Commander";
@@ -48,7 +53,13 @@ function welcome() {
             });
             break;
           case "addDepartment":
-            inquirer.prompt(addDepartment).then(async(answers) => {
+            inquirer.prompt([
+                {
+                  type: "input",
+                  message: "Enter the name of the new department:",
+                  name: "dep_name",
+                },
+            ]).then(async(answers) => {
                 await db.addDepartment(answers.dep_name);
                 console.log(`Added ${answers.dep_name} to the database.`);
                 mainMenu();
@@ -56,19 +67,127 @@ function welcome() {
             break;
     
           case "addRole":
-            return mainMenu();
+            const [deptResults] = await db.viewAllDepartments();
+            const deptChoices = choiceArray(deptResults, "name", "id");
+            inquirer.prompt([
+              {
+                type: "input",
+                message: "Enter the name of the new role:",
+                name: "role_name",
+              },
+              {
+                type: "input",
+                message: "Enter the salary for this role:",
+                name: "salary",
+              },
+              {
+                type: "list",
+                message: "Choose the department for this role:",
+                name: "department_id",
+                choices: deptChoices,
+              },
+              
+          ]).then(async(answers) => {
+              await db.addRole(answers.role_name, answers.salary, answers.department_id);
+              console.log(`Added ${answers.role_name} to the database.`);
+              mainMenu();
+          });
+          break;
       
           case "addEmployee":
-            return mainMenu();
+            const [roleResults] = await db.viewAllRoles();
+            const roleChoices = choiceArray(roleResults, "title", "id");
+            const [employeeResults] = await db.viewAllEmployees();
+            const managerChoices = choiceArray(employeeResults, "last_name", "id");
+            inquirer.prompt([
+              {
+                type: "input",
+                message: "Enter their first name:",
+                name: "first_name",
+              },
+              {
+                type: "input",
+                message: "Enter their last name",
+                name: "last_name",
+              },
+              {
+                type: "list",
+                message: "Choose the department for this role:",
+                name: "role_id",
+                choices: roleChoices,
+              },
+              {
+                type: "list",
+                message: "Choose the manager for this employee:",
+                name: "manager_id",
+                choices: managerChoices,
+              },
+              
+          ]).then(async(answers) => {
+              await db.addEmployee(answers.first_name, answers.last_name, answers.role_id, answers.manager_id);
+              console.log(`Added ${answers.first_name} to the database.`);
+              mainMenu();
+          });
+          break;
+           
       
           case "updateEmployeeRole":
-            return mainMenu();
-      
+            const [empResults] = await db.viewAllEmployees();
+            const empChoices = choiceArray(empResults, "last_name", "id");
+            const [roleResults2] = await db.viewAllRoles();
+            const roleChoices2 = choiceArray(roleResults2, "title", "id");
+            inquirer.prompt([
+              {
+                type: "list",
+                message: "Choose the employee to update:",
+                name: "employee_id",
+                choices: empChoices,
+              },
+              {
+                type: "list",
+                message: "Choose the new role for this employee:",
+                name: "role_id",
+                choices: roleChoices2,
+              },
+            ]).then(async(answers) => {
+              await db.updateEmployeeRole(answers.role_id, answers.employee_id);
+              console.log(`Updated employee role.`);
+              mainMenu();
+            });
+            break;
+
           case "updateEmployeeManager":
+            const [empResults2] = await db.viewAllEmployees();
+            const empChoices2 = choiceArray(empResults2, "last_name", "id");
+            const [managerResults] = await db.viewAllEmployees();
+            const managerChoices2 = choiceArray(managerResults, "last_name", "id");
+            inquirer.prompt([
+              {
+                type: "list",
+                message: "Choose the employee to update:",
+                name: "employee_id",
+                choices: empChoices2,
+              },
+              {
+                type: "list",
+                message: "Choose the new manager for this employee:",
+                name: "manager_id",
+                choices: managerChoices2,
+              },
+            ]).then(async(answers) => {
+              await db.updateEmployeeManager(answers.manager_id, answers.employee_id);
+              console.log(`Updated employee manager.`);
+              mainMenu();
+            });
+            break;
             return mainMenu();
       
           case "viewTotalUtilizationByDepartment":
-            return mainMenu();
+            db.viewUtilBudgetByDept().then(([results]) => {
+              console.table(results);
+              mainMenu();
+          });
+          break;
       
           case "quit":
             return process.exit();
