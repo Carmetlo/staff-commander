@@ -30,7 +30,8 @@ Staff Commander is a command-line application that allows users to manage depart
 1. Upon starting the application, a welcome message will be displayed.
 2. Use the main menu to navigate through different options.
 3. Follow the prompts to perform various actions like viewing, adding, or updating information.
-4. Choose "Quit" to exit the application.
+4. Delete Departments, Roles, and Employees depending on the circumstances
+5. Choose "Quit" to exit the application.
 
 ## Dependencies
 
