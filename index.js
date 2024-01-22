@@ -1,6 +1,6 @@
 const inquirer = require("inquirer");
 const figlet = require("figlet");
-const db = require("./helpers/database.js");
+const db = require("./db/database.js");
 // const { addDepartment } = require("./helpers/menu.js");
 function choiceArray(results, name_key, value_key) {
   return results.map((row) => ({
@@ -188,6 +188,66 @@ function welcome() {
               mainMenu();
           });
           break;
+
+          case "deleteDepartment":
+            const deleteAnswers = await inquirer.prompt(menuItems);
+            switch (deleteAnswers.choice) {
+              case "deleteDepartment":
+                const [deptResults2] = await db.viewAllDepartments();
+                const deptChoices2 = choiceArray(deptResults2, "name", "id");
+                const deptAnswer = await inquirer.prompt([
+                  {
+                    type: "list",
+                    message: "Choose the department to delete:",
+                    name: "department_id",
+                    choices: deptChoices2,
+                  },
+                ]);
+                await db.deleteDepartment(deptAnswer.department_id);
+                console.log("Department deleted");
+                mainMenu();
+                break;
+
+          case "deleteRole":
+            const [roleResults3] = await db.viewAllRoles();
+            const roleDeleteChoices = choiceArray(roleResults3, "title", "id");
+            const roleDeleteAnswer = await inquirer.prompt([
+              {
+                type: "list",
+                message: "Choose the role to delete:",
+                name: "role_id",
+                choices: roleDeleteChoices,
+              },
+            ]);
+            await db.deleteRole(roleDeleteAnswer.role_id);
+            console.log("Role deleted");
+            mainMenu();
+            break;
+
+          case "deleteEmployee":
+            const [empResults3] = await db.viewAllEmployees();
+            const empDeleteChoices = choiceArray(empResults3, "last_name", "id");
+            deleteEmpAnswer = await inquirer.prompt([
+              {
+                type: "list",
+                message: "Choose the employee to delete:",
+                name: "employee_id",
+                choices: empDeleteChoices,
+              },
+            ]);
+            await db.deleteEmployee(deleteEmpAnswer.employee_id);
+            console.log("Employee deleted");
+            mainMenu();
+            break;
+          
+          case "cancel":
+            mainMenu();
+            break;
+
+          default:
+            throw new Error(`Invalid action: ${deleteAnswers.deleteChioce}`);
+        }
+        break;
       
           case "quit":
             return process.exit();

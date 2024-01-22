@@ -1,36 +1,3 @@
-// class Menu {
-//     constructor() {
-//       this.mainMenu = [
-//         {
-//           type: "list",
-//           message: "\n\nMain Menu - Please choose an option:\n\n",
-//           name: "choice",
-//           choices: [
-//             { name: "View All Employees", value: "viewAllEmployees" },
-//             { name: "View All Roles", value: "viewAllRoles" },
-//             { name: "View All Departments", value: "viewAllDepartments" },
-//             { name: "Add Department", value: "addDepartment" },
-//             { name: "Add Role", value: "addRole" },
-//             { name: "Add Employee", value: "addEmployee" },
-//             { name: "Update Employee Role", value: "updateEmployeeRole" },
-//             { name: "Update Employee Manager", value: "updateEmployeeManager" },
-//             { name: "View Total Utilization By Department", value: "viewTotalUtilizationByDepartment" },
-//             { name: "Quit", value: "quit" },
-//           ],
-//         },
-//       ];
-  
-//       this.addDepartment = [
-//         {
-//           type: "input",
-//           message: "Enter the name of the new department:",
-//           name: "dep_name",
-//         },
-//       ];
-//     }
-//   }
-  
-  // module.exports = Menu;
 const connection = require("../config/createConnection"); 
 class DB {
   constructor(connection) {
@@ -89,6 +56,27 @@ class DB {
   viewUtilBudgetByDept() {
     return this.connection.promise().query(
       "SELECT department.name AS department, SUM(role.salary) AS total_budget FROM role INNER JOIN department ON role.department_id = department.id GROUP BY department.id"
+    );
+  }
+
+  deleteDepartment(departmentId) {
+    return this.connection.promise().query(
+      "DELETE FROM department WHERE id = ?",
+      [departmentId]
+    );
+}
+
+  deleteRole(roleId) {
+    return this.connection.promise().query(
+      "DELETE FROM role WHERE id = ?",
+      [roleId]
+    );
+  }
+
+  deleteEmployee(employeeId) {
+    return this.connection.promise().query(
+      "DELETE FROM employee WHERE id = ?",
+      [employeeId]
     );
   }
 }
